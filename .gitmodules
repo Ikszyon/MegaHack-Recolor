@@ -1,0 +1,3 @@
+[submodule "lib/Mega-Hack-Extensions"]
+	path = lib/Mega-Hack-Extensions
+	url = https://github.com/Ikszyon/Mega-Hack-Extensions
