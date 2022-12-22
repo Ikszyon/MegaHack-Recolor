@@ -6,7 +6,6 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 #include <vector>
 #include <fstream>
 
@@ -56,15 +55,24 @@ void MH_CALL SetColor(Button* Btn) {
     WriteConfig(ColorPicker->getHexString());
 }
 
+bool LoadedWithQuickLDR() {
+    std::ifstream SettingsFile("quickldr/settings.txt", std::ios::in);
+    std::stringstream SStr;
+    SStr << SettingsFile.rdbuf();
+    std::string SettingsContent = SStr.str();
+    SettingsFile.close();
+
+    return (SettingsContent.find("MegaHack-Recolor.dll") != std::string::npos);
+}
 
 DWORD WINAPI MainThread(LPVOID lpParam) {
     std::ifstream ColorFile("MH_COLOR", std::ios::in);
     std::stringstream SStr;
     SStr << ColorFile.rdbuf();
-    std::string Hex = SStr.str().substr(0, 6);
+    std::string Hex = SStr.str();
     ColorFile.close();
 
-    if(Hex.length() < 6) {
+    if(Hex.length() != 6) {
         Hex = "AD62EE";
     }
 
@@ -82,7 +90,7 @@ DWORD WINAPI MainThread(LPVOID lpParam) {
 
     Label* QuickLDR = Label::Create("Load me with quickldr");
 
-    if(GetModuleHandle("quickldr.dll")) {
+    if(LoadedWithQuickLDR()) {
         MHRecolor->addElements({InfoLabel,
                                 ColorPicker,
                                 Set});
