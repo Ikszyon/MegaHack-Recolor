@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 
 
 using namespace MegaHackExt;
@@ -56,13 +57,7 @@ void MH_CALL SetColor(Button* Btn) {
 }
 
 bool LoadedWithQuickLDR() {
-    std::ifstream SettingsFile("quickldr/settings.txt", std::ios::in);
-    std::stringstream SStr;
-    SStr << SettingsFile.rdbuf();
-    std::string SettingsContent = SStr.str();
-    SettingsFile.close();
-
-    return (SettingsContent.find("MegaHack-Recolor.dll") != std::string::npos);
+    return !std::filesystem::exists("extensions/MegaHack-Recolor.dll");
 }
 
 DWORD WINAPI MainThread(LPVOID lpParam) {
