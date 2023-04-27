@@ -16,13 +16,10 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE
+  src
+
   lib
-
-  lib/Mega-Hack-Extensions
   lib/Mega-Hack-Extensions/include
-  lib/Mega-Hack-Extensions/extensions1
 )
 
-target_link_libraries(${PROJECT_NAME}
-  ${CMAKE_SOURCE_DIR}/lib/Mega-Hack-Extensions/bin/hackpro.lib
-)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/Mega-Hack-Extensions/bin/hackpro.lib)
