@@ -29,8 +29,6 @@ DWORD APIENTRY MainThread(LPVOID lpParam) {
     MegaHackRecolor::SetupHooks();
     MegaHackRecolor::CreateModWindow();
 
-    Sleep(30000);
-
     for(int i = 0 ;; i = (i + MegaHackRecolor::RainbowBool) % 361) {
         Sleep((16.0 / MegaHackRecolor::RainbowSpeed));
 
