@@ -16,21 +16,27 @@ using namespace MegaHackExt;
 
 DWORD APIENTRY MainThread(LPVOID lpParam) {
 
-    if(!MegaHackRecolor::Init() || MegaHackRecolor::GetMHVersion() != "v7.1-GM1") {
+    if(!MegaHackRecolor::Init()) {
         return 1;
     }
 
-    MegaHackRecolor::SetupPatches();
+    if(MegaHackRecolor::GetMHVersion() != MegaHackRecolor::CorrectVersion) {
+        MegaHackRecolor::OutdatedVersionWindow();
+        return 1;
+    }
 
+    MegaHackRecolor::LoadConfig();
+    MegaHackRecolor::SetupHooks();
     MegaHackRecolor::CreateModWindow();
+
+    Sleep(30000);
 
     for(int i = 0 ;; i = (i + MegaHackRecolor::RainbowBool) % 361) {
         Sleep((16.0 / MegaHackRecolor::RainbowSpeed));
 
         if(MegaHackRecolor::RainbowBool) {
-            MegaHackRecolor::MHColor = MegaHackRecolor::HSVtoRGB(static_cast<float>(i), MegaHackRecolor::RainbowSaturation, MegaHackRecolor::RainbowValue);
+            MegaHackRecolor::MHColor = MegaHackRecolor::Util::HSVtoRGB(static_cast<float>(i), MegaHackRecolor::RainbowSaturation, MegaHackRecolor::RainbowValue);
             MegaHackRecolor::Picker->set(MegaHackRecolor::MHColor);
-            MegaHackRecolor::SetMenuColor(MegaHackRecolor::MHColor);
         }
     }
 

@@ -1,3 +1,9 @@
+[submodule "lib/json"]
+	path = lib/json
+	url = https://github.com/nlohmann/json
+[submodule "lib/minhook"]
+	path = lib/minhook
+	url = https://github.com/TsudaKageyu/minhook
 [submodule "lib/Mega-Hack-Extensions"]
 	path = lib/Mega-Hack-Extensions
 	url = https://github.com/Ikszyon/Mega-Hack-Extensions
