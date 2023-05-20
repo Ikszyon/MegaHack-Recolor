@@ -22,8 +22,6 @@ using namespace MegaHackExt;
 
 namespace MegaHackRecolor {
 
-    static long __ECX;
-
     static char* Base;
 
     static const std::string CorrectVersion = "v7.1-GM1";
