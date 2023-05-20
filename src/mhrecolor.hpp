@@ -24,7 +24,7 @@ namespace MegaHackRecolor {
 
     static char* Base;
 
-    static const std::string CorrectVersion = "v7.1-GM1";
+    static const std::string CorrectVersion = "v7.1.1-GM1";
 
     static Colour MHColor = {0xAD, 0x62, 0xEE};
     static Colour LastColor = {0xAD, 0x62, 0xEE};
@@ -267,25 +267,25 @@ namespace MegaHackRecolor {
     void SetupHooks() {
         std::vector<MidHook> Hooks =
         {
-            {0x131045, 0x18,
+            {0x147165, 0x18,
              reinterpret_cast<uintptr_t>(&Hooks::Titlebar), 0x1D},
 
-            {0x134662, 0xC,
+            {0x14A9F2, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::CheckBoxIndicator), 0x17},
 
-            {0x134695, 0xC,
+            {0x14AA25, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::CheckBoxIndicatorOpaque), 0x17},
 
-            {0x134683, 0xB,
+            {0x14AA13, 0xB,
              reinterpret_cast<uintptr_t>(&Hooks::EnabledText), 0x1A},
 
-            {0x1346B2, 0xB,
+            {0x14AA42, 0xB,
              reinterpret_cast<uintptr_t>(&Hooks::EnabledTextOpaque), 0x20},
 
-            {0x133F0E, 0x7,
+            {0x14A26E, 0x7,
              reinterpret_cast<uintptr_t>(&Hooks::SelectionBoxText), 0x22},
 
-            {0x133FF4, 0xC,
+            {0x14A354, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::SelectionBoxIndicator), 0x17}
         };
 
