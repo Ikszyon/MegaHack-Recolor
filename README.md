@@ -17,6 +17,7 @@ no I didn't reverse engineer megahack, grow up
 ### Planned Features
 
 - fully customizable color transitions
+- profile system
 
 #
 
