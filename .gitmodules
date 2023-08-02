@@ -7,3 +7,6 @@
 [submodule "lib/Mega-Hack-Extensions"]
 	path = lib/Mega-Hack-Extensions
 	url = https://github.com/Ikszyon/Mega-Hack-Extensions
+[submodule "lib/Sig"]
+	path = lib/Sig
+	url = https://github.com/HoShiMin/Sig

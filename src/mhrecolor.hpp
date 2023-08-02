@@ -3,12 +3,15 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <shellapi.h>
+#include <Psapi.h>
 
 #include <extensions2.hpp>
 
 #include <json.hpp>
 
 #include <minhook.h>
+
+#include <Sig.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -24,8 +27,6 @@ namespace MegaHackRecolor {
 
     static char* Base;
 
-    static const std::string CorrectVersion = "v7.1.1-GM2";
-
     static Colour MHColor = {0xAD, 0x62, 0xEE};
     static Colour LastColor = {0xAD, 0x62, 0xEE};
 
@@ -33,6 +34,10 @@ namespace MegaHackRecolor {
     static int RainbowSaturation = 100;
     static int RainbowValue = 100;
     static bool RainbowBool = 0;
+
+    static uintptr_t MHTitleBar_o = 0;
+    static uintptr_t MHDrawGUI_o = 0;
+    static bool SignaturesFound = 0;
 
     static ColourPicker* Picker;
 
@@ -247,45 +252,54 @@ namespace MegaHackRecolor {
         ConfigFile.close();
     }
 
-    std::string GetMHVersion() {
-        return reinterpret_cast<char*>(Base + Util::FindInMHDLL("Successfully updated to version ") + 0x20);
-    }
-
     bool Init() {
         if(!std::filesystem::exists("hackpro.dll")) {
             return 0;
         }
 
-        while(GetModuleHandle("hackpro.dll") == 0) {};
         Base = reinterpret_cast<char*>(GetModuleHandle("hackpro.dll"));
 
-        MH_Initialize();
+        MODULEINFO HackProInfo = {0};
+        if(GetModuleInformation(GetCurrentProcess(), (HMODULE)Base, &HackProInfo, sizeof(HackProInfo))) {
+            MHTitleBar_o = (uintptr_t)Sig::find(Base, HackProInfo.SizeOfImage, "55 8B EC 83 E4 F8 51 53 56 8B D9") - (uintptr_t)Base;
+            MHDrawGUI_o = (uintptr_t)Sig::find(Base, HackProInfo.SizeOfImage, "55 8B EC 83 E4 F8 83 EC 0C 53 8B D9 56 57 8B 3D ? ? ? ?") - (uintptr_t)Base;
 
-        return 1;
+            MH_Initialize();
+        } else {
+            return 0;
+        }
+
+        if(MHTitleBar_o == 0 ||
+           MHDrawGUI_o == 0) {
+            return 0;
+        } else {
+            SignaturesFound = 1;
+            return 1;
+        }
     }
 
     void SetupHooks() {
         std::vector<MidHook> Hooks =
         {
-            {0x1486E0 + 0x15, 0x18,
+            {MHTitleBar_o + 0x15, 0x18,
              reinterpret_cast<uintptr_t>(&Hooks::Titlebar), 0x1D},
 
-            {0x14B5C0 + 0x9D2, 0xC,
+            {MHDrawGUI_o + 0x9D2, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::CheckBoxIndicator), 0x17},
 
-            {0x14B5C0 + 0xA05, 0xC,
+            {MHDrawGUI_o + 0xA05, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::CheckBoxIndicatorOpaque), 0x17},
 
-            {0x14B5C0 + 0x9F3, 0xB,
+            {MHDrawGUI_o + 0x9F3, 0xB,
              reinterpret_cast<uintptr_t>(&Hooks::EnabledText), 0x1A},
 
-            {0x14B5C0 + 0xA22, 0xB,
+            {MHDrawGUI_o + 0xA22, 0xB,
              reinterpret_cast<uintptr_t>(&Hooks::EnabledTextOpaque), 0x20},
 
-            {0x14B5C0 + 0x24E, 0x7,
+            {MHDrawGUI_o + 0x24E, 0x7,
              reinterpret_cast<uintptr_t>(&Hooks::SelectionBoxText), 0x22},
 
-            {0x14B5C0 + 0x334, 0xC,
+            {MHDrawGUI_o + 0x334, 0xC,
              reinterpret_cast<uintptr_t>(&Hooks::SelectionBoxIndicator), 0x17}
         };
 
@@ -343,16 +357,11 @@ namespace MegaHackRecolor {
                              HorizontalLayout::Create(Saturation, Value)});
     }
 
-    void OutdatedVersionWindow() {
+    void SigsNotFoundWindow() {
         Window* Window = Window::Create("MH Recolor");
 
-        Label* VersionLabel1 = Label::Create("Incorrect Version");
-
-        std::string Label2Text = "Installed Ver: " + GetMHVersion();
-        Label* VersionLabel2 = Label::Create(Label2Text.c_str());
-
-        std::string Label3Text = "Mod made for: " + CorrectVersion;
-        Label* VersionLabel3 = Label::Create(Label3Text.c_str());
+        Label* VersionLabel1 = Label::Create("Function Sigs not found");
+        Label* VersionLabel2 = Label::Create("MH Recolor likely outdated");
 
         Button* GitHub = Button::CreateEx("GitHub",
         [](Button*) {
@@ -361,7 +370,6 @@ namespace MegaHackRecolor {
 
         Window->addElements({VersionLabel1,
                              VersionLabel2,
-                             VersionLabel3,
                              GitHub});
     }
 

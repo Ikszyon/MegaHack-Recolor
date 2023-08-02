@@ -24,6 +24,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   lib/minhook/include
 
   lib/json/single_include/nlohmann
+
+  lib/Sig/include/Sig
 )
 
 target_link_libraries(${PROJECT_NAME} minhook ${CMAKE_SOURCE_DIR}/lib/Mega-Hack-Extensions/bin/hackpro.lib)

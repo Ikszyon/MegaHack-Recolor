@@ -8,6 +8,7 @@ no I didn't reverse engineer megahack, grow up
 
 - __can now be loaded through extensions__
 - runtime color change (switched from patches to hooks)
+- forward compatibility (sigscanning instead of hard coded offsets)
 - rainbow menu animation
     - customizable Saturation and Value
     - adjustable cycle speed
